@@ -20,9 +20,9 @@ multiversx_sc_wasm_adapter::endpoints! {
     (
         init => init
         upgrade => upgrade
+        bumpCount => bump_count
         bump => bump
-        bumps => bumps
-        donateBumps => donate_bumps
+        bumpMultiple => bump_multiple
     )
 }
 

@@ -3,16 +3,29 @@
 use multiversx_sc::imports::*;
 
 #[multiversx_sc::contract]
-pub trait CtfBump: bump_common::BumpCommon {
-    #[init]
-    fn init(&self) {}
+pub trait CtfBump {
+    // Storage for a single bump counter
+    #[view(bumpCount)]
+    #[storage_mapper("bumpCount")]
+    fn bump_count(&self) -> SingleValueMapper<u64>;
 
-    #[upgrade]
+    #[init]
+    fn init(&self) {
+        self.bump_count().set(0);
+    }
+
+	#[upgrade]
     fn upgrade(&self) {}
 
-    #[endpoint]
+    #[endpoint(bump)]
     fn bump(&self) {
-        let caller = self.blockchain().get_caller();
-        self.perform_bump(&caller);
+        let current_count = self.bump_count().get();
+        self.bump_count().set(current_count + 1);
+    }
+
+    #[endpoint(bumpMultiple)]
+    fn bump_multiple(&self, count: u64) {
+        let current_count = self.bump_count().get();
+        self.bump_count().set(current_count + count);
     }
 }
